@@ -34,6 +34,7 @@ pipeline{
                 expression { return params.RUN_INTEGRATION }
             }
             steps{
+                sh """
                    chmod u+x integration_tests.sh
                    ./integration_tests.sh
                    """
@@ -51,6 +52,9 @@ pipeline{
                              publishers: [
                                  sshPublisherDesc(
                                      configName: "1234",
+                                     transfers: [
+                                        sshTransfer(sourceFiles: "${params.FILE_NAME}")
+                                     ]
                                  )
                              ]
                 )
@@ -62,9 +66,7 @@ pipeline{
             echo 'You can go home'
         }
         failure{
-}            echo 'Sit and work on'
+            echo 'Sit and work on'
         }
     }
-                                     transfers: [
-                                        sshTransfer(sourceFiles: "${params.FILE_NAME}")
-                                     ]
+}
