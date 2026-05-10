@@ -68,4 +68,3 @@ pipeline{
                                      transfers: [
                                         sshTransfer(sourceFiles: "${params.FILE_NAME}")
                                      ]
-
