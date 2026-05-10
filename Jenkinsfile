@@ -20,7 +20,6 @@ pipeline{
         }
         stage('Run Unit Tests'){
             when {
-                // Этап выполнится, если выражение true 
                 expression { return params.RUN_UNIT }
             }
             steps{
@@ -32,11 +31,9 @@ pipeline{
         }
         stage('Run Integration Tests'){
             when {
-                // Этап выполнится, если выражение true 
                 expression { return params.RUN_INTEGRATION }
             }
             steps{
-                sh """
                    chmod u+x integration_tests.sh
                    ./integration_tests.sh
                    """
@@ -44,17 +41,31 @@ pipeline{
         }
         stage('Application Launch Test'){
             steps{
-                // Запускаем исполняемый файл main из текущего каталога
                 sh """./${params.FILE_NAME}"""
             }
         }
+        stage('Sending an artifact to 1234'){
+            steps{
+			    // Настройки плагина Publish Over SSH
+                sshPublisher(
+                             publishers: [
+                                 sshPublisherDesc(
+                                     configName: "1234",
+                                 )
+                             ]
+                )
+            }
+        }
     }
-	post{
-		success{
-			echo 'You can go home'
-		}
-		failure{
-			echo 'Sit and work on'
-		}
-	}
-}
+    post{
+        success{
+            echo 'You can go home'
+        }
+        failure{
+}            echo 'Sit and work on'
+        }
+    }
+                                     transfers: [
+                                        sshTransfer(sourceFiles: "${params.FILE_NAME}")
+                                     ]
+
